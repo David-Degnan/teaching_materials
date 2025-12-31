@@ -1,0 +1,1044 @@
+---
+title: R Bootcamp
+output: html_document
+---
+
+# Welcome!
+
+Welcome to your self-guided tour through David Degnan/Lisa Bramer's R and Python Bootcamp for data science! We are data scientists at Pacific Northwest National Laboratory and bioinformatics/biostatistics professors at the University of Oregon. This lecture series has been adapted from several R/Python teaching workshops. If you experience any issues, please reach out to David at david.degnan@pnnl.gov
+
+*More about the authors:* [David Degnan](https://www.pnnl.gov/people/david-degnan), [Lisa Bramer](https://www.pnnl.gov/people/lisa-bramer)
+
+## How does this work?
+
+You are currently in a jupyter notebook. These notebooks are divided into two sections. A text section (which you are currently reading) and a code section (examples below). Code sections allow you to run code by hitting the play button. You may write your own code in these sections too. Note that you are on your own notebook server at this moment, which means no one else can access/see what you are doing. It also means you are free to play with any code you want to, and you will not mess up other folks' notebooks. It does mean that any notes you type in here will not be saved, so write them elsewhere. This notebook is in R and contains the R introductory tutorials.
+
+---
+
+
+# R Lecture 1: R Objects
+
+In practice, we typically install R and RStudio on our computers and use RStudio to code. But for now, let's use google collab. A key first step when using R is to determine the version you're using. So let's start with that!
+
+```{r}
+# This actually returns a list (more later) and we can access values in a list with a $
+R.Version()$version.string
+```
+
+## Section 1.1 Single Values
+
+Let's learn about the individual object types available in R. At a base level, one can think of R as a fancy calculator. It does the basic operations of a calculator, and even follows the rules of PEMDAS (Parenthesis, Exponent, Multiplication and Division, Addition and Subtraction). Whenever you hand code an equation, remember PEMDAS! It is a common mistake of early programmers. In this code, we have put a comment before the code using the pound sign (#).
+
+```{r}
+# Multiply 199 by 3, add 100, divide by 4
+(199*3 + 100) / 4
+```
+
+```{r}
+# Take the log base 2 of a value
+log2(8)
+```
+
+```{r}
+# Note that log by itself is base log, so pay attention to the base when using log functions
+log(8)
+```
+
+```{r}
+# Take a square root
+sqrt(16)
+```
+
+In R, there are also *comparison* functions. Think greater than (>), greater than or equal to (>=), equal to (==), etc.
+
+```{r}
+# Is 1 greater than 2?
+1 > 2
+```
+
+Note that what is returned is a logical - a TRUE or FALSE to indicate whether the comparison is correct (TRUE) or incorrect (FALSE).
+
+```{r}
+# Is 2 greater than or equal to 2?
+2 >= 2
+```
+
+```{r}
+# Is 2 equal to 2?
+2 == 2
+```
+
+```{r}
+# Is 3 less than 2?
+3 < 2
+```
+
+```{r}
+# Is 3 less than or equal to 2?
+3 <= 2
+```
+
+You can assign a value to a variable with "=", which is different from "==" which determines whether two values are equivalent to each other or not.
+
+```{r}
+# In R, you can assign a variable's value with "="
+my_var = 5
+
+# And call it by simply typing the name of the variable
+my_var
+```
+
+```{r}
+# In R, you can also assign values with an arrow (<-), though most programmers
+# are starting to move away from this older implementation
+this_works_too <- 10
+
+this_works_too
+```
+
+R has many object types. Here are some of the main ones and the functions to make them:
+
+*Character:* a type to hold text values, also called strings `x = "words"`
+
+*Logical:* a type to store TRUEs and FALSEs `x=FALSE` or `x=F`. Note that `x="False"` will store the value as a string and not a logical.
+
+*Factor:* a special R type of strings with an inherent order. Think: low, medium, high. `x=factor("low", "medium", "high")`
+
+*Numeric:* a number `x=1`
+
+```{r}
+# Let's investigate the character objects
+cat_var = "cats"
+
+# We can get the object type with the class() function
+class(cat_var)
+```
+
+```{r}
+# Logical
+x = TRUE
+class(x)
+```
+
+```{r}
+# Factor - note that the variable "x" has now been overwritten with my new
+# variable call
+x = factor("low")
+class(x)
+```
+
+```{r}
+# Numeric
+x = 1
+class(x)
+```
+
+```{r}
+# Special numeric type - integers
+x = integer(1)
+class(x)
+```
+
+```{r}
+# Special type - NA can be used for any missing data (very important and common in data science)
+NA
+class(NA) # It's actually the logical type!
+```
+
+```{r}
+# Special type - Infinity
+1/0
+class(1/0) # It's the numeric type, which makes sense
+```
+
+```{r}
+# Special type - NaN "not a number"
+0/0
+class(0/0)
+```
+
+## Section 1.2 Multiple Values
+
+If you are more familiar with python or R, this list of comparisons between objects which allow multiple values may be helpful. If not, no worries. We will go through each of these object types.
+
+
+| **Python**                  | **R**                                |
+|-----------------------------|--------------------------------------|
+| **List**                    | **Vector**                          |
+| **Dictionary**              | **List**                            |
+| **DataFrame** (`pandas`)    | **data.frame** (`tibble`, `data.frame`, `data.table`) |
+| **2D Array/Matrix** (`numpy`) | **matrix** (mostly used for matrix math) | ​
+
+*Vectors* are a series of objects in R. Vectors are *atomic*, meaning they must all the be same type. You can set a vector in R use `c()` or `:`.
+
+
+```{r}
+# Make a vector of strings
+c("cat", "dog", "rabbit")
+```
+
+```{r}
+# Make a vector of numbers
+1:6
+```
+
+```{r}
+# The seq function can be used to make other arrangements of number vectors
+# (like counting by halves)
+seq(1, 3, 0.5)
+```
+
+```{r}
+# R has some built-in vectors, like the entire alphabet
+LETTERS
+```
+
+```{r}
+# Vectors can be one type, and there is a hierarchy to types in R. If a string
+# is included in a vector, it will convert the entire vector to string.
+c(1, "2", 3)
+class(c(1, "2", 3))
+```
+
+```{r}
+# You can append a vector to another vector
+my_vec = 1:3
+my_vec2 = c(4:6)
+c(my_vec, my_vec2)
+```
+
+```{r}
+# You can also query a vector. This will return the 3rd letter. Unlike python,
+# R starts counting at index 1 (as opposed to index 0).
+LETTERS[3]
+```
+
+```{r}
+# Remove a value with -
+  LETTERS[-3]
+```
+
+```{r}
+# Be careful with the minus and a vector. To remove multiple letters, do this
+LETTERS[-c(3:26)]
+```
+
+```{r}
+# As opposed to this: LETTERS[-3:26]
+# It includes a zero which is not a valid index value
+```
+
+Note that several function in R are *vectorized* and iterate through a vector automatically. For example:
+
+```{r}
+# The vector 3:6 is iterated through and TRUEs/FALSEs are returned where the
+# instances are TRUE or FALSE. This is because >= is vectorized.
+# Not every function in R is vectorized!
+3:6 > 4
+```
+
+Like vectors, elements (another word for values) in a *matrix* must be of the same type.​ The `nrow` and `ncol` parameters will set the number of rows and columns. Matrices are sometimes used in R, oftentimes to make slower code fast. It is more common to use `data.frames` which we will cover shortly.
+
+```{r}
+# Specification of rows and columns matters
+matrix(1:10, nrow = 2, ncol = 5)
+```
+
+```{r}
+# Specification of rows and columns matters
+matrix(1:10, nrow = 5, ncol = 2)
+```
+
+```{r}
+# Matrices are queried by row then column [row, column]
+mymatrix = matrix(1:10, nrow = 5, ncol = 2)
+mymatrix[1,2]
+```
+
+```{r}
+# If you want the entire row, leave the column selection blank
+mymatrix[1,]
+```
+
+```{r}
+# If you want the entire column, leave the row selection blank
+mymatrix[,2]
+```
+
+R does not do matrix math by default, and requires special implementations of the math functions to do so.
+
+```{r}
+matA = matrix(1:4, nrow = 2)
+matB = matrix(5:8, nrow = 2)
+
+# Each value of A is multiplied to B, which is not matrix math
+matA * matB
+```
+
+```{r}
+# Here is the correct form for matrix math. If needed, google the other functions.
+matA %*% matB
+```
+
+*Lists* are very flexible R objects. Elements in a list do NOT have to be of the same type or even of the same data structure.
+
+```{r}
+# Look at this complicated list! It has vectors, it has lists, with data.frames
+# inside it. Holy cow!
+mylist = list(
+  Participants = c("Anna", "Bill", "Cora", "Dean"),
+  RaceDate = format(Sys.Date(), "%a %b %d"),
+  Distances = c("5k", "10k"),
+  Results = list("5k" = data.frame(Name = c("Dean", "Edward"),
+                                   RaceTime = c(29.02, 30.24)),
+                 "10k" = data.frame(Name = c("Anna", "Bill", "Cora"),
+                                    RaceTime = c(59.1, 62.42, 60.59))
+            )
+)
+mylist
+```
+
+```{r}
+# Access values in a list with double brackets [[]] or the $
+
+# Return the first entry in the list
+mylist[[1]]
+```
+
+```{r}
+# Return the entry called "Participants"
+mylist$Participants
+```
+
+```{r}
+# Return the 4th entry (a list) and extract the first entry of that list
+mylist[[4]][[1]]
+```
+
+```{r}
+# Use backticks to access strange names in lists. R doesn't like names that
+# start with numbers or has spaces. Backticks is your friend in these cases.
+mylist[[4]]$`5k`
+```
+
+A *data.frame* is an organized list where each vector within the data.frame has the same length. It is essentially a table. This is the "bread and butter" object of data science and several of the functions we are going to teach you.
+
+```{r}
+# How to make a data.frame
+mydataframe = data.frame(
+  Name = c("Anna", "Bill", "Cora", "Dean"),
+  Age = c(29, 37, 60, 42),
+  Sex = c("F", "M", "F", "M"),
+  Employed = c(TRUE, TRUE, FALSE, TRUE)
+)
+
+mydataframe
+```
+
+```{r}
+# data.frames are their own class of object. They are essentially
+# special lists with extra rules.
+class(mydataframe)
+```
+
+```{r}
+# You can check any object's type with the `is` functions
+is.data.frame(mydataframe)
+is.list(mydataframe)
+```
+
+```{r}
+# You can convert them with the `as` functions
+as.list(mydataframe)
+```
+
+```{r}
+# Query a data.frame like we query a matrix - row, then column
+mydataframe[1:4, 2]
+```
+
+```{r}
+# Or by using names
+mydataframe[,"Age"]
+```
+
+```{r}
+# Or by using $, as with lists
+mydataframe$Age
+```
+
+Similar to *data.frames* are *data.tables* which are faster data.frames from the `data.tables` package, and *tibbles* which were a precursor to data.frames, but are still widely used, especially with the tidyverse functions we will learn later.
+
+## Section 1.3 Hidden Values
+
+A powerful way to “hide” information about R objects. Used often in package design. Attributes can be any R object, like lists, dimensions, column names, logicals. They are used more often in advanced R programming, and can help speed up slow code or keep track of a lot of information in one place.
+
+```{r}
+# Here are some hidden attributes for our dataframe
+attributes(mydataframe)
+```
+
+```{r}
+# They can be accessed with functions
+colnames(mydataframe)
+row.names(mydataframe)
+names(mydataframe)
+```
+
+```{r}
+# Or with $
+attributes(mydataframe)$class
+```
+
+```{r}
+# You can also add your own!
+attributes(mydataframe)$Tacos = "Delicious"
+attributes(mydataframe)
+```
+
+# R Lecture 2: Basic R Functions
+
+R has some basic functions built-in to the base package of the language. The base package is the one that is loaded when you start R. Let's learn about some of these functions
+
+## Section 2.1 Basic Matrix/Data.Frame Functions
+
+The `iris` dataset is one that is baked into base R, and one we will use a lot.
+Let's learn about it.
+
+```{r}
+# dim() gives the dimensions. R is always row then column.
+dim(iris)
+```
+
+```{r}
+# Get the number of rows with nrow()
+nrow(iris)
+```
+
+```{r}
+# Get the number of columns with ncol()
+ncol(iris)
+```
+
+```{r}
+# See the first few rows with head
+head(iris)
+```
+
+```{r}
+# And the last few rows with tail
+tail(iris)
+```
+
+```{r}
+# You can do more complicated row selection with vectorization
+# The F/T is iterated through the data.frame, returning just
+# the even rows. Let's look at a few with head().
+head(iris[c(FALSE, TRUE),])
+```
+
+```{r}
+# The selection can get quite complicated!
+head(iris[c(F,F,T,F,T),])
+```
+
+```{r}
+# Learn some high level summary information with summary().
+# We get statistics for the continuous variables, and counts
+# for the categorical.
+summary(iris)
+```
+
+```{r}
+# Transpose a table (flip rows and columns) with t
+t(iris)[1:5, 1:5] # Let's look at a few entries
+```
+
+## Section 2.2 Basic Statistics
+
+```{r}
+# Add values together with sum. Let's add all the Sepal.Lengths together
+sum(iris$Sepal.Length)
+```
+
+```{r}
+# We can also do some basic counting by converting to logical. Let's count
+# number of Sepal.Lengths above 5.
+sum(iris$Sepal.Length > 5)
+```
+
+```{r}
+# We can also count the number of missing values
+sum(is.na(iris$Sepal.Length)) # No missingness!
+```
+
+```{r}
+# To take a measurement of center, use mean or median
+mean(iris$Sepal.Length)
+```
+
+```{r}
+median(iris$Sepal.Length)
+```
+
+```{r}
+# You can get the variance and standard deviation to determine
+# how much data deviates from that center
+var(iris$Sepal.Length)
+```
+
+```{r}
+sd(iris$Sepal.Length)
+```
+
+```{r}
+# Sometimes there's too many digits, and you'd prefere to round
+round(sd(iris$Sepal.Length), digits = 4)
+```
+
+```{r}
+# You can also round up to the whole number
+ceiling(0.8281)
+```
+
+```{r}
+# Or down
+floor(0.8281)
+```
+
+```{r}
+# You can also calculate the correlation between two values
+cor(iris$Sepal.Length, iris$Sepal.Width)
+```
+
+## Section 2.3 Other Basic Functions
+
+```{r}
+# Sort a vector with sort
+sort(iris$Sepal.Length)
+```
+
+```{r}
+# You can also change the direction
+sort(iris$Sepal.Length, decreasing = TRUE)
+```
+
+```{r}
+# You can also find the position where a value matches
+match(4.4, iris$Sepal.Length) # It will return the first match
+iris$Sepal.Length[9]
+```
+
+```{r}
+# Which will return all positions where the statement is TRUE
+which(iris$Sepal.Length == 4.4)
+```
+
+```{r}
+# Any will return TRUE if anything in a vector is true
+any(c(T,F,F,F))
+```
+
+```{r}
+# All will return TRUE if everything in the vector is true
+all(c(T,F,F,F))
+```
+
+```{r}
+# Subset will return rows where a statement is true
+head(subset(iris, Species == "setosa"))
+```
+
+```{r}
+# %in% will return TRUE if a value is in something
+"setosa" %in% iris$Species
+```
+
+```{r}
+# If-else will evaluate a statement, returning what is in the IF statement
+# when the condition is TRUE, otherwise, it returns what is in the ELSE
+# statement.
+if ("setosa" %in% iris$Species){
+
+  message("setosa is in the species data.frame")
+
+} else{
+
+  message("This message should never display.")
+}
+```
+
+```{r}
+# ifelse is a vectorized version
+ifelse(1:5 > 2, "> 2", "< 3")
+```
+
+# R Lecture 3: Data Manipulation
+
+In R, there are several packages with functions. The order you load packages in matters, which means functions from later packages, loaded with a `library()` call, may overwrite earlier functions. Thus, sometimes we have to specify the package and function like so `package::function()`. For example, the `select()` function from the `dplyr` package could be written as so `dplyr::select()`.
+
+Here, let's learn some basic of data manipulation.
+
+Though it sounds simplistic, understanding the difference between “wide” and “long” format is fundamental to understanding data science in R.​ All common tidyverse packages, which is the highly popular suite of R packages for managing data, will require some switching from long to wide format and vice versa. So let's learn that now.
+
+
+|                         | **Wide Format**                       | **Long Format**                    |
+|-------------------------|----------------------------------------|-------------------------------------|
+| **Human Readable**      | Tables are smaller and easier to read | Tables are longer and harder to read |
+| **Size**                | Tends to be smaller                  | Tends to be larger                  |
+| **Computer Readable**   | Slower to process computationally     | Faster to process computationally    |
+
+## Section 3.1 Long and Wide Format
+
+```{r}
+# Iris is currently in wide format, where we have multiple variable measurements
+# per species, and each variable is a column. Let's add an ID for each measurement.
+iris2 = iris
+iris2$ID = 1:nrow(iris2)
+head(iris2)
+```
+
+```{r}
+# Let's load the tidyverse. When running scripts in Rstudio, you will have to
+# install with `install.packages()`. This package is already installed for you here.
+library(tidyverse)
+```
+
+```{r}
+# Let's pivot those first four columns longer
+# Now we have a new data.frame with species, name (the names of the columns with
+# pivoted) and value (those columns' values)
+long = pivot_longer(iris2, cols = 1:4)
+head(long)
+```
+
+```{r}
+# To pivot back, let's use pivot_wider. Here, the id_cols are the columns
+# with the identifiers, names are the new column names, and values are where
+# the column values are from.
+head(pivot_wider(long, id_cols = c(ID, Species), names_from = name, values_from = value))
+```
+
+## Section 3.2 Joins
+
+```{r}
+# Let's define two tables with information to join
+Cost = data.frame(
+  Item = c("Waffles", "Pancakes", "Bacon", "Biscuits"),
+  UnitCost = c(0.25, 0.25, 1.00, 0.50)
+)
+Cost
+```
+
+```{r}
+Sales = data.frame(
+  Location = c(rep("Eugene", 3), rep("Springfield", 2)),
+  Item = c("Pancakes", "Bacon", "Sausage", "Waffles", "Pancakes"),
+  UnitSales = c(5, 2, 4, 5, 4)
+)
+Sales
+```
+
+```{r}
+# Let's join everything that matches in the "Item" category from Sales
+# to Cost, but let's not lose anything in Cost. Though no Biscuits were
+# sold, it's still in this data.frame, and returned as "NA". In other
+# words, it's missing.
+left_join(Cost, Sales, by = "Item")
+```
+
+```{r}
+# Let's do that again, but this time, keep everything in Sales.
+# Sausages were sold, but we don't know what they cost, thus
+# that value is NA.
+right_join(Cost, Sales, by = "Item")
+```
+
+```{r}
+# Let's do that again, but instead, remove anything missing.
+inner_join(Cost, Sales, by = "Item")
+```
+
+```{r}
+# Let's do that one more time, but keep every mismatch
+full_join(Cost, Sales, by = "Item")
+```
+
+# R Lecture 4: Data Science Language
+
+We are now ready to start learning the tidyverse! Make sure the tidyverse is loaded by typing `library(tidyverse)` and running it at least once in a code chunk. You should be fine if you're following along, but if you skipped to this section, you'll need to load this library first.
+
+## Section 4.1 grep functions
+
+Sometimes, we need to do complicated string matching with [regex](https://rstudio.github.io/cheatsheets/regex.pdf). The `grep` functions are a way for us to use this regex functionality. We will not exhaustively demonstrate regex, but rather, provide a few examples.  
+
+```{r}
+# As a reminder, here is what the letters vector looks like
+letters
+```
+
+```{r}
+# Let's return the positions of a-c
+grep(pattern = "[a-c]", letters)
+```
+
+```{r}
+# Let's return the positions of all the vowels
+grep("a|e|i|o|u", letters)
+```
+
+```{r}
+# grepl, "grep logical", will instead return a TRUE/FALSE (logical) vector
+# as opposed to the positions
+grepl(pattern = "[a-c]", letters)
+```
+
+```{r}
+# gsub will replace the values
+gsub(pattern = "a|e|i|o|u", replacement = "tony", x = letters)
+```
+
+## Section 4.2 pipes
+
+Understanding pipes and how they work is fundamental to understanding how to code in the tidyverse. The pipe is written as so `%>%` as is used to string functions together in a readable format. Base R also has a pipe now that is written as `|>`. To prevent headaches, we will only be using the tidyverse pipe.
+
+The pipe works by passing the previous code to the *first free parameter* of the function after the pipe. This can get tricky when certain functions aren't written to work nicely with pipes. See the gsub function? The "x" variable, the thing we would want to pass with a pipe, is the 3rd entry. So we will have to be careful with that example. See below.
+
+```{r}
+# Though we don't know these tidyverse functions yet, here is a clean
+# example showing how pipes keep our code "tidy" (easy to read and
+# interpret)
+iris %>% # take the iris data set
+  filter(Petal.Width > 0.2) %>% # pass the iris dataset to a filter
+  count(Species) # pass the filtered object to a counter
+
+# translation: count the number of flowers by species with a petal
+# width greater than 0.2
+```
+
+```{r}
+# Replace vowels with the number 1 - notice that we have to pass the object
+# to the correct location with a period
+c("cats", "dogs", "rabbits") %>%
+  gsub(pattern = "a|e|i|o|u", replacement = "1", x = .)
+```
+
+```{r}
+# Look what happens when we're not specific. The vector is passed as the first
+# parameter (pattern). The function does not operate as we want. It's fine if
+# this isn't immediately clear to you, just know the way we pipe functions
+# together matters.
+c("cats", "dogs", "rabbits") %>%
+  gsub("a|e|i|o|u", "1")
+```
+
+## Section 4.3 Tidyverse Functions
+
+Now let's explore some options in tidyverse.
+
+```{r}
+# Let's pull some exact rows - the 24th through the 26th row
+iris %>%
+  slice(24:26)
+```
+
+```{r}
+# Let's pull some exact columns
+iris %>%
+  select(Sepal.Width, Sepal.Length) %>%
+  head()
+```
+
+```{r}
+# Remove a column with -
+iris %>%
+  select(-Sepal.Width) %>%
+  head()
+```
+
+```{r}
+# Rename a column with rename
+iris %>%
+  rename(BetterName = Sepal.Width, FlowerThing = Sepal.Length) %>%
+  head()
+```
+
+```{r}
+# Move a column with relocate. Default is to move a column to the front.
+iris %>%
+  relocate(Species) %>%
+  head()
+```
+
+```{r}
+# Specify where ou want to relocate with .before or .after parameters
+iris %>%
+  relocate(Species, .before = Petal.Width) %>%
+  head()
+```
+
+```{r}
+# Filter rows with the filter function. It's similar to subset.
+iris %>%
+  filter(Sepal.Length > 5.0) %>%
+  head()
+```
+
+```{r}
+# Add a column with mutate
+iris %>%
+  mutate(Long.Sepal = Sepal.Length > 5) %>%
+  head()
+```
+
+```{r}
+# Ifelse is super useful in mutate functions
+iris %>%
+  mutate(Sepal.Size = ifelse(Sepal.Length > 5, "long", "short")) %>%
+  head()
+```
+
+Sometimes we need to calculate summary statistics per group. A great way to do this is to use the `group_by()` and `summarize()` functions in R in that order. `group_by()` allows us to specify the groups, and `summarize()` allows us to calculate the summary statistics. `summarize()` is similar to mutate where we specify the new name of a column and how to calculate it. Typically, summarize will result in a smaller data.frame
+
+```{r}
+# Calculate mean and sd Sepal.Length per species. The "per" part tells us our
+# groups.
+iris %>%
+  group_by(Species) %>%
+  summarize(
+    Mean.Sepal.Length = mean(Sepal.Length),
+    SD.Sepal.Length = sd(Sepal.Length)
+  )
+```
+
+```{r}
+# Grouped data can cause some problems downstream, so use ungroup() to remove
+# those groupings
+iris %>%
+  group_by(Species) %>%
+  summarize(
+    Mean.Sepal.Length = mean(Sepal.Length),
+    SD.Sepal.Length = sd(Sepal.Length)
+  ) %>%
+  ungroup()
+```
+
+```{r}
+# Order the entire data.frame by a column with arrange
+iris %>%
+  arrange(Sepal.Length) %>%
+  head()
+```
+
+```{r}
+# Reverse the order with desc
+iris %>%
+  arrange(desc(Sepal.Length)) %>%
+  head()
+```
+
+```{r}
+# You can arrange by more than one column
+iris %>%
+  arrange(Sepal.Length, Sepal.Width) %>%
+  head()
+```
+
+```{r}
+# Count the number of instances of a group with count
+iris %>%
+  count(Species)
+```
+
+# R Lecture 5: Visualization
+
+`ggplot2`, the grammar of graphics plot 2, is an essential plotting package in the tidyverse. Typically, we pipe datasets to ggplot, which then requires stringing together plot stylizations with `+`. There are many, many ways to customize and improve your plots with ggplot. We will be sticking to more basic examples here. *Make sure to have the tidyverse loaded with `library(tidyverse)`
+
+## Section 5.1 Understanding aesthetic
+
+The ggplot() function takes two parameters:​
+
+* data: a data.frame, tibble, or data.table​
+
+* mapping: the aesthetic, aes(), command​
+
+The aes command allows us to pass the column name of a data.frame to plotting parameters to all subsequent functions​
+
+* x: the x-axis variable​
+
+* y: the y-axis variable​
+
+* fill: select the fill color for the bars and heatmaps ​
+
+* color: typically colors the points and lines​
+
+* shape: select a shape type for a points​
+
+* And many more: https://ggplot2.tidyverse.org/articles/ggplot2-specs.html
+
+```{r}
+# iris is pass to the first parameter `data` and `aes` is passed to mapping.
+# We haven't told ggplot to make a plot yet, so it will appear blank, but
+# the templating is here
+iris %>%
+  ggplot(aes(x = Sepal.Length, y = Sepal.Width, color = Species))
+```
+
+## Section 5.2 A sampling of ggplot
+
+```{r}
+# Bar plot with labels renamed
+ggplot(iris, aes(x = Species, fill = Species)) +
+  geom_bar() +
+  theme_bw() +
+  xlab("") +
+  ylab("Frequency")
+```
+
+```{r}
+# Histogram
+ggplot(iris, aes(x = Sepal.Width)) +
+  geom_histogram(color = "black", fill = "steelblue") +
+  theme_bw() +
+  xlab("Sepal.Width") +
+  ylab("Frequency")
+```
+
+```{r}
+# Boxplot with points. Yes, plot features can stack
+ggplot(iris, aes(x = Species, y = Petal.Width, fill = Species)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.5, height = 0) +
+  theme_bw()
+```
+
+```{r}
+# Violin plots
+ggplot(iris, aes(x = Species, y = Petal.Width, fill = Species)) +
+  geom_violin() +
+  theme_bw()
+```
+
+```{r}
+# Scatterplots
+ggplot(iris, aes(x = Petal.Length, y = Sepal.Length, color = Species)) +
+  geom_point() +
+  theme_bw()
+```
+
+```{r}
+# Heatmaps
+ggplot(ToothGrowth, aes(x = supp, y = dose, fill = len)) +
+  geom_tile() +
+  theme_bw()
+```
+
+## Section 5.3 Advanced Plotting Options
+
+Other notes:
+
+* If you have several plots of the same type to make, try `facet_wrap()` and `facet_grid()`
+
+* Make any plot interactive with plotly's `ggplotly()` function
+
+* If you have several plots of different types to put together, try the `patchwork` package.
+
+```{r}
+# Facet wrap example
+iris %>% pivot_longer(1:4) %>%
+  rename(Variable = name, Value = value) %>%
+  ggplot(aes(x = Variable, y = Value)) +
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap(~Species)
+```
+
+# R Lecture 6: Functions and Iteration
+
+Sometimes basic vectorized functions in R are not sophisticated enough for some of the more advanced iteration tasks. Though R does support for and while loops, we tend to steer R users to the `purrr` package, as for loops in R can be quite slow. Sticking to use tidyverse in R will like result in fast and clean code, and is our recommendation. Regardless, here we have an example of for loops, and some of the functionality available in purrr.
+
+## Section 6.1 Defining a function
+
+Define a function as so:
+
+```{r}
+myfun = function(x, y) {
+  x ** y
+}
+
+myfun(3, 2)
+myfun(4, 3)
+```
+
+## Section 6.2 Iteration with For Loop
+
+Let's take the mean of a thousand random samples from the normal distribution. `rnorm()` allows us to simulate values from a normal distribution with mean 0 and a standard deviation of 1. `rnorm(100)` will simulate a hundred of these values.
+
+```{r}
+# Set a place to hold the mean values
+means = c()
+
+# Iterate a thousand times
+for (i in 1:1000) {
+  means = c(means, mean(rnorm(100))) # rnorm 100 simulates a 100
+}
+
+data.frame(Means = means) %>%
+  ggplot(aes(x = Means)) +
+    geom_histogram()
+```
+
+## Section 6.3 Using purrr
+
+Let's do this example again, but let's say instead I want to keep all the simulated values.
+
+```{r}
+# Make a data.frame to hold simulations
+simulations = data.frame(Simulations = 1:1000)
+
+# Now let's output all the files as list that we will nest in our data.frame
+simulations = simulations %>%
+  mutate(Values = map(Simulations, ~rnorm(100)))
+
+# Let's look at the first row
+simulations[1,]
+```
+
+```{r}
+# Now let's calculate the mean of each of these groups. map_dbl
+# will return a single value for each row as opposed to map which
+# returns a list. See the other map function `map_lgl`, `map_chr`,
+# etc to return logicals, character, etc
+simulations = simulations %>%
+  mutate(mean = map_dbl(Values, function(x) {mean(x)}))
+
+simulations[1,]
+```
+
+```{r}
+# If we want everything as a single value list, we can use tidyr::unnest.
+simulations %>%
+  unnest(cols = Values) %>%
+  head()
+```
+
+```{r}
+# Similarly, we can use group_by() and nest() to make groups to iterate through.
+# This is useful for functions that are much more complicated than the mean used
+# here.
+iris %>%
+  group_by(Species) %>%
+  nest() %>%
+  mutate(mean = map_dbl(data, function(x) {mean(x$Sepal.Width)})) %>%
+  select(-data)
+```
+
+# Wrap-Up
+
+This is the end of the introduction to R tutorials! To continue your learning, open R and RStudio, and start working through examples in these excellent resources:
+
+* [R Cookbook](https://rc2e.com/)
+* [R for Data Science](https://r4ds.had.co.nz/)
+* [Advanced R](https://adv-r.hadley.nz/)
+* [Tidymodels](https://www.tmwr.org/)
+
